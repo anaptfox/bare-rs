@@ -181,22 +181,31 @@ pub unsafe fn get_error_stack(env: *mut js_env_t, error: *mut js_value_t) -> Bar
     Ok(String::from_utf8_lossy(&buffer[..str_len as usize]).into_owned())
 }
 
+#[cfg(target_os = "macos")]
 pub fn set_stack_size() -> BareResult<()> {
-    unsafe {
-        let mut attr: libc::pthread_attr_t = mem::zeroed();
-        if libc::pthread_attr_init(&mut attr) != 0 {
-            return Err(BareError::SetupError("Failed to init pthread attr".into()));
-        }
-        
-        // Set stack size to 64MB
-        if libc::pthread_attr_setstacksize(&mut attr, 64 * 1024 * 1024) != 0 {
-            return Err(BareError::SetupError("Failed to set stack size".into()));
-        }
-        
-        if libc::pthread_attr_destroy(&mut attr) != 0 {
-            return Err(BareError::SetupError("Failed to destroy pthread attr".into()));
+    // Only set stack size when running as main executable
+    if std::env::args().next().map_or(false, |arg| arg.ends_with("bare-rs")) {
+        unsafe {
+            let mut attr: libc::pthread_attr_t = std::mem::zeroed();
+            if libc::pthread_attr_init(&mut attr) != 0 {
+                return Err(BareError::SetupError("Failed to init pthread attr".into()));
+            }
+            
+            // Set stack size to 64MB
+            if libc::pthread_attr_setstacksize(&mut attr, 64 * 1024 * 1024) != 0 {
+                return Err(BareError::SetupError("Failed to set stack size".into()));
+            }
+            
+            if libc::pthread_attr_destroy(&mut attr) != 0 {
+                return Err(BareError::SetupError("Failed to destroy pthread attr".into()));
+            }
         }
     }
+    Ok(())
+}
+
+#[cfg(not(target_os = "macos"))]
+pub fn set_stack_size() -> BareResult<()> {
     Ok(())
 }
 

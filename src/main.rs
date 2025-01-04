@@ -63,29 +63,20 @@ fn main() -> BareResult<()> {
         // Get command line args
         let args: Vec<String> = env::args().collect();
         
-        let (source, filename) = if args.len() > 1 {
-            // Load script from file
-            debug!("Loading script from file: {}", args[1]);
-            let script = std::fs::read_to_string(&args[1])
-                .map_err(|e| BareError::RuntimeError(format!("Failed to read script file: {}", e)))?;
-            let script = CString::new(script)?;
-            let len = script.as_bytes().len();
-            let source = uv_buf_t {
-                base: script.as_ptr() as *mut i8,
-                len,
-            };
-            let filename = CString::new(args[1].clone())?;
-            (source, filename)
-        } else {
-            // Start REPL mode
-            debug!("No script provided, starting REPL mode");
-            let repl_script = "console.log('Welcome to Bare-rs REPL!'); while(true) { const input = Bare.prompt('> '); try { console.log(eval(input)); } catch(e) { console.error(e); } }";
-            let source = uv_buf_t {
-                base: CString::new(repl_script)?.as_ptr() as *mut i8,
-                len: repl_script.len(),
-            };
-            let filename = CString::new("repl.js")?;
-            (source, filename)
+        if args.len() <= 1 {
+            return Err(BareError::RuntimeError("No script file provided. Usage: bare-rs <script_path>".into()));
+        }
+
+        // Load script from file
+        debug!("Loading script from file: {}", args[1]);
+        let file_script = std::fs::read_to_string(&args[1])
+            .map_err(|e| BareError::RuntimeError(format!("Failed to read script file: {}", e)))?;
+        let script = CString::new(file_script)?;
+        let filename = CString::new(args[1].clone())?;
+
+        let source = uv_buf_t {
+            base: script.as_ptr() as *mut i8,
+            len: script.as_bytes().len(),
         };
 
         debug!("Loading script...");
