@@ -3,7 +3,6 @@ pub mod bindings;
 use std::ffi::NulError;
 use std::fmt;
 use std::ptr;
-use std::mem;
 use libc;
 use std::sync::Mutex;
 
