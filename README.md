@@ -2,15 +2,6 @@
 
 Rust bindings for [bare](https://github.com/holepunchto/bare) - a small and modular JavaScript runtime for desktop and mobile. This project provides safe Rust bindings and a testing framework for the Bare runtime.
 
-## Features
-
-- Safe Rust bindings for the Bare JavaScript runtime
-- Comprehensive error handling and type conversions
-- Thread-safe runtime management
-- Testing framework for JavaScript execution
-- Support for async operations and events
-- Memory management and garbage collection controls
-
 ## Prerequisites
 
 Before building, ensure you have:
@@ -18,7 +9,6 @@ Before building, ensure you have:
 - Rust toolchain installed (via [rustup](https://rustup.rs/))
 - Node.js and npm installed
 - C compiler (gcc, clang, or MSVC)
-- On Windows: Visual Studio Build Tools
 - bare-make installed globally:
 ```sh
 npm install -g bare-make
@@ -75,51 +65,6 @@ fn main() -> BareResult<()> {
 }
 ```
 
-### Error Handling
-
-The library provides comprehensive error handling:
-
-```rust
-#[derive(Debug)]
-pub enum BareError {
-    // System level errors
-    RuntimeError(String),
-    SetupError(String),
-    
-    // JavaScript errors
-    JSError {
-        error_type: String,
-        message: String,
-        stack: Option<String>,
-    },
-    
-    // Resource errors
-    MemoryError(String),
-    ResourceExhausted(String),
-}
-```
-
-### Testing
-
-The project includes a testing framework for JavaScript code:
-
-```rust
-#[test]
-fn test_bare_runtime() -> BareResult<()> {
-    let instance = TestInstance::new()?;
-    
-    unsafe {
-        // Test JavaScript execution
-        instance.run_script(r#"
-            let x = 1 + 1;
-            if(x !== 2) throw new Error('Math is broken!');
-        "#)?;
-    }
-    
-    Ok(())
-}
-```
-
 ## Project Structure
 
 ```
@@ -139,32 +84,6 @@ bare-rs/
 ├── build.rs            # Build configuration
 ├── Cargo.toml          # Rust dependencies and project config
 └── README.md          
-```
-
-## Advanced Features
-
-### Platform Configuration
-
-The runtime can be configured with various options:
-
-```rust
-let platform_options = js_platform_options_t {
-    version: 1,
-    expose_garbage_collection: false,
-    optimize_for_memory: true,
-    // ... other options
-};
-```
-
-### Event Handling
-
-Support for Bare's event system:
-
-```rust
-// Register event handlers
-bare_on_before_exit(bare, Some(before_exit_cb));
-bare_on_exit(bare, Some(exit_cb));
-bare_on_idle(bare, Some(idle_cb));
 ```
 
 ## Contributing
