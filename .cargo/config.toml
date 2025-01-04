@@ -6,6 +6,9 @@ rustflags = [
 [target.'cfg(target_os = "macos")']
 rustflags = [
     "-C", "link-arg=-Wl,-export_dynamic",
+    "-C", "link-arg=-Wl,-stack_size,0x4000000",
+    "-C", "force-frame-pointers=yes",
+    "-C", "debug-assertions=yes"
 ]
 
 [target.'cfg(target_os = "windows")']

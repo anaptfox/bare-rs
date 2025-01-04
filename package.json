@@ -1,0 +1,17 @@
+{
+  "name": "bare-rs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "cd bare && bare-make generate",
+    "generate-no-cache": "cd bare && bare-make generate --no-cache",
+    "build": "cd bare && bare-make build"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+"dependencies": {
+  "bare-make": "^1.3.0"
+}
+}
