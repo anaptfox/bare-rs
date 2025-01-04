@@ -9,18 +9,14 @@ Before building, ensure you have:
 - Rust toolchain installed (via [rustup](https://rustup.rs/))
 - Node.js and npm installed
 - C compiler (gcc, clang, or MSVC)
-- bare-make installed globally:
-```sh
-npm install -g bare-make
-```
+- bare-make installed globally:```sh
+npm install -g bare-make```
 
 ## Building
 
-1. Clone the repository with submodules:
-```sh 
+1. Clone the repository with submodules:```sh 
 git clone --recursive https://github.com/yourusername/bare-rs.git
-cd bare-rs
-```
+cd bare-rs```
 
 If you've already cloned the repository:
 ```sh
@@ -36,34 +32,7 @@ cargo build
 
 ### Basic Example
 
-```rust
-use bare_rs::{BareResult, init_runtime_once, get_runtime, set_stack_size};
-use std::ffi::CString;
-
-fn main() -> BareResult<()> {
-    // Initialize runtime
-    unsafe {
-        set_stack_size()?;
-        init_runtime_once()?;
-        let runtime = get_runtime()?;
-
-        // Create a new Bare instance
-        let instance = TestInstance::new()?;
-
-        // Run JavaScript code
-        instance.run_script(r#"
-            console.log('Hello from Bare-rs!');
-            
-            // Use async operations
-            setTimeout(() => {
-                console.log('Async operation complete');
-                Bare.exit(0);
-            }, 1000);
-        "#)?;
-    }
-    Ok(())
-}
-```
+See [examples/basic.rs](examples/basic.rs) for a basic example.
 
 ## Project Structure
 
@@ -100,3 +69,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - [bare](https://github.com/holepunchto/bare) - The original JavaScript runtime
 - The Rust and JavaScript communities for their invaluable resources and tools 
+
+
+
